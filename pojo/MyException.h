@@ -2,7 +2,6 @@
 // Created by Ryan Shen on 2018/11/26.
 //
 #pragma once
-
 #ifndef POINT_CLOUD_TOOL_MYEXCEPTION_H
 #define POINT_CLOUD_TOOL_MYEXCEPTION_H
 

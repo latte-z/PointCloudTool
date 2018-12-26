@@ -1,23 +1,6 @@
 //
 // Created by Ryan Shen on 2018/11/6.
 //
-// Visualization Toolkit
-#include <vtkRenderWindow.h>
-
-#include <QFileDialog>
-#include <QtWidgets/QWidget>
-#include <QMessageBox>
-#include <QSignalMapper>
-#include <iostream>
-#include <vector>
-#include <QDateTime>
-#include "tool/triangulation.h"
-#include "tool/projection.h"
-#include "tool/resampling.h"
-#include "tool/filter.h"
-#include "tool/utils.h"
-#include "pojo/MyException.h"
-
 #include "main_window.h"
 
 // 初始化静态对象指针
@@ -79,36 +62,29 @@ MainWindow::~MainWindow() {
 void MainWindow::Initial() {
     ui.qvtkWidget_mesh->setVisible(false);
 
+    // 初始化 point cloud
+    myPointCloud.cloud.reset(new PointCloudT);
+    myPointCloud.cloud->resize(1);
+
     // 初始化两个VTK Widget
-    InitialVtkWidget();
-    InitialMeshVtkWidget();
+    viewer.reset(new pcl::visualization::PCLVisualizer("point cloud viewer", false));
+//    viewer->addPointCloud(myPointCloud.cloud, "cloudinit");
+    // 注册选取点云的回调函数
+    viewer->registerAreaPickingCallback(pp_callback, (void *) &(myPointCloud.cloud));
+    ui.qvtkWidget->SetRenderWindow(viewer->getRenderWindow());
+    viewer->setupInteractor(ui.qvtkWidget->GetInteractor(), ui.qvtkWidget->GetRenderWindow());
+    ui.qvtkWidget->update();
+
+    viewer_mesh.reset(new pcl::visualization::PCLVisualizer("mesh viewer", false));
+    ui.qvtkWidget_mesh->SetRenderWindow(viewer_mesh->getRenderWindow());
+    viewer_mesh->setupInteractor(ui.qvtkWidget_mesh->GetInteractor(), ui.qvtkWidget_mesh->GetRenderWindow());
+    ui.qvtkWidget_mesh->update();
 
     // Console 区域设置为 NoSelection
     ui.consoleTable->setSelectionMode(QAbstractItemView::NoSelection);
 
     // 初始化选中点云的计数
     selected_cloud_num = 0;
-}
-
-void MainWindow::InitialVtkWidget() {
-    cloud.reset(new pcl::PointCloud<pcl::PointXYZ>);
-    viewer.reset(new pcl::visualization::PCLVisualizer("point cloud viewer", false));
-    viewer->addPointCloud(cloud, "cloud");
-
-    // 注册选取点云的回调函数
-    viewer->registerAreaPickingCallback(pp_callback, (void *) &cloud);
-
-    ui.qvtkWidget->SetRenderWindow(viewer->getRenderWindow());
-    viewer->setupInteractor(ui.qvtkWidget->GetInteractor(), ui.qvtkWidget->GetRenderWindow());
-    ui.qvtkWidget->update();
-}
-
-void MainWindow::InitialMeshVtkWidget() {
-    viewer_mesh.reset(new pcl::visualization::PCLVisualizer("mesh viewer", false));
-
-    ui.qvtkWidget_mesh->SetRenderWindow(viewer_mesh->getRenderWindow());
-    viewer_mesh->setupInteractor(ui.qvtkWidget_mesh->GetInteractor(), ui.qvtkWidget_mesh->GetRenderWindow());
-    ui.qvtkWidget_mesh->update();
 }
 
 void MainWindow::pp_callback(const pcl::visualization::AreaPickingEvent &event, void *args) {
@@ -122,7 +98,7 @@ void MainWindow::pp_callback(const pcl::visualization::AreaPickingEvent &event, 
         return;
     for (int i = 0; i < indices.size(); ++i) {
         // push_back 从尾部插入数据
-        selected_points->points.push_back(pThis->cloud->points.at(indices[i]));
+        selected_points->points.push_back((pThis->myPointCloud).cloud->points.at(indices[i]));
         totalIndices.push_back(indices[i]);
     }
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> red(selected_points, 255, 0, 0);
@@ -143,35 +119,50 @@ void MainWindow::OpenFile() {
     // 打开pcd文件
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Open PointCloud"), ".",
-                                                    tr("Open PCD files(*.pcd)"));
+                                                    tr("Open point cloud files(*.pcd *.ply *.obj)"));
 
     if (!fileName.isEmpty()) {
+        // 清理 vector 和 viewer
+        cloud_vector.clear();
+        points_number = 0;
+        viewer->removeAllPointClouds();
+
+        // 加载点云文件
+        myPointCloud.cloud.reset(new PointCloudT);
         std::string file_name = fileName.toStdString();
-        pcl::PCLPointCloud2 cloud2;
-        Eigen::Vector4f origin;
-        Eigen::Quaternionf orientation;
-        int pcd_version;
-        int data_type;
-        unsigned int data_idx;
-        int offset = 0;
-        pcl::PCDReader rd;
-        rd.readHeader(file_name, cloud2, origin, orientation, pcd_version, data_type, data_idx);
+        std::string sub_name = getSubName(file_name);
 
-        if (data_type == 0) {
-            pcl::io::loadPCDFile(fileName.toStdString(), *cloud);
-        } else if (data_type == 2) {
-            pcl::PCDReader reader;
-            reader.read<pcl::PointXYZ>(fileName.toStdString(), *cloud);
+        if (fileName.endsWith(".pcd", Qt::CaseInsensitive)) {
+            pcl::PCLPointCloud2 cloud2;
+            Eigen::Vector4f origin;
+            Eigen::Quaternionf orientation;
+            int pcd_version;
+            int data_type;
+            unsigned int data_idx;
+            int offset = 0;
+            pcl::PCDReader rd;
+            rd.readHeader(file_name, cloud2, origin, orientation, pcd_version, data_type, data_idx);
+
+            if (data_type == 0) {
+                pcl::io::loadPCDFile(fileName.toStdString(), *(myPointCloud.cloud));
+            } else if (data_type == 2) {
+                pcl::PCDReader reader;
+                reader.read<PointT>(fileName.toStdString(), *(myPointCloud.cloud));
+            }
+
+            myPointCloud.fileName = file_name;
+            myPointCloud.subName = sub_name;
+            cloud_vector.push_back(myPointCloud);
+            points_number += myPointCloud.cloud->points.size();
+
+            updateViewer(viewer);
+
+            // operation log
+            SaveLog("加载文件" + QString::fromStdString(sub_name), "成功");
         }
-        viewer->removePointCloud("cloud", 0);
-        viewer->addPointCloud(cloud, "cloud");
-        viewer->resetCamera();
-        ui.qvtkWidget->update();
-
-        // operation log
-        SaveLog("加载文件" + fileName, "成功");
     } else {
         SaveLog("加载文件" + fileName, "失败");
+        return;
     }
 }
 
@@ -182,12 +173,12 @@ void MainWindow::SaveFile() {
         return;
     int return_status;
     if (fileName.endsWith(".pcd", Qt::CaseInsensitive))
-        return_status = pcl::io::savePCDFileASCII(fileName.toStdString(), *cloud);
+        return_status = pcl::io::savePCDFileASCII(fileName.toStdString(), *(myPointCloud.cloud));
     else if (fileName.endsWith(".vtk", Qt::CaseInsensitive))
         return_status = pcl::io::saveVTKFile(fileName.toStdString(), mesh);
     else {
         fileName.append(".pcd");
-        return_status = pcl::io::savePCDFileASCII(fileName.toStdString(), *cloud);
+        return_status = pcl::io::savePCDFileASCII(fileName.toStdString(), *(myPointCloud.cloud));
     }
 
     if (return_status != 0) {
@@ -240,7 +231,7 @@ void MainWindow::TopView() {
 
 void MainWindow::DisplayTriangles(int type) {
     viewer_mesh->removePolygonMesh("mesh", 0);
-    mesh = GreedyProjection(cloud);
+    mesh = GreedyProjection(myPointCloud.cloud);
 //    mesh = Poisson(cloud);
     viewer_mesh->addPolygonMesh(mesh, "mesh");
 
@@ -273,7 +264,7 @@ void MainWindow::OpenPointsViewer() {
 
 void MainWindow::DisplayProjection() {
     int type = 1;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr projectedCloud = GetProjection(cloud, type);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr projectedCloud = GetProjection(myPointCloud.cloud, type);
 
     // use a custom handler
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> red(projectedCloud, 255, 0, 0);
@@ -282,10 +273,17 @@ void MainWindow::DisplayProjection() {
     viewer->resetCamera();
     ui.qvtkWidget->update();
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save point cloud"), "",
-                                                    tr("Point cloud data (*.pcd)"));
-    pcl::PCDWriter writer;
-    writer.write(fileName.toStdString(), *projectedCloud, false);
+    try {
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save point cloud"), "",
+                                                        tr("Point cloud data (*.pcd)"));
+        pcl::PCDWriter writer;
+        writer.write(fileName.toStdString(), *projectedCloud, false);
+    } catch (IOException e) {
+        // TODO: check pcl exception method
+        std::cout << e.what();
+    }
+
+
 
     // operation log
     std::string modelType;
@@ -301,7 +299,7 @@ void MainWindow::DisplayProjection() {
 }
 
 void MainWindow::GetResample() {
-    pcl::PointCloud<pcl::PointNormal> mls_points = MLSResampling(cloud);
+    pcl::PointCloud<pcl::PointNormal> mls_points = MLSResampling(myPointCloud.cloud);
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save point cloud"), "",
                                                     tr("Point cloud data (*.pcd)"));
     pcl::PCDWriter writer;
@@ -309,7 +307,7 @@ void MainWindow::GetResample() {
 }
 
 void MainWindow::FilterStatisticalOutlierRemoval() {
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered = StatisticalOutlierRemovalFilter(cloud, false);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered = StatisticalOutlierRemovalFilter(myPointCloud.cloud, false);
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save point cloud"), "",
                                                     tr("Point cloud data (*.pcd)"));
     pcl::PCDWriter writer;
@@ -320,15 +318,15 @@ void MainWindow::FilterStatisticalOutlierRemoval() {
 void MainWindow::RemoveSelectPoints() {
     try {
         std::vector<int> FINALIndices;
-        for (int i = 0; i < cloud->size(); ++i) {
+        for (int i = 0; i < (myPointCloud.cloud)->size(); ++i) {
             if (!FindInVector(i, totalIndices)) {
                 FINALIndices.push_back(i);
             }
         }
 
-        pcl::copyPointCloud(*cloud, FINALIndices, *cloud);
+        pcl::copyPointCloud(*(myPointCloud.cloud), FINALIndices, *(myPointCloud.cloud));
         viewer->removeAllPointClouds();
-        viewer->addPointCloud(cloud, "cloud");
+        viewer->addPointCloud(myPointCloud.cloud, "cloud");
         ui.qvtkWidget->update();
 
         // 清空存储选中点的vector
@@ -340,6 +338,15 @@ void MainWindow::RemoveSelectPoints() {
     catch (MyException &e) {
         SaveLog("处理发生错误", "请重试");
     }
+}
+
+void MainWindow::updateViewer(boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer) {
+    for (int i = 0; i < cloud_vector.size(); i++) {
+        viewer->addPointCloud(cloud_vector[i].cloud, "cloud" + std::to_string(i));
+        viewer->updatePointCloud(cloud_vector[i].cloud, "cloud" + std::to_string(i));
+    }
+    viewer->resetCamera();
+    ui.qvtkWidget->update();
 }
 
 // Save operation log

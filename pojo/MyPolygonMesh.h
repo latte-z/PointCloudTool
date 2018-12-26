@@ -2,7 +2,6 @@
 // Created by Ryan Shen on 2018/11/16.
 //
 #pragma once
-
 #ifndef POINT_CLOUD_TOOL_MYPOLYGONMESH_H
 #define POINT_CLOUD_TOOL_MYPOLYGONMESH_H
 

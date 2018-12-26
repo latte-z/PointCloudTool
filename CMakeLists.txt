@@ -26,9 +26,10 @@ set(CMAKE_AUTORCC ON)
 # find qtwidgets library
 find_package(Qt5 REQUIRED Widgets)
 find_package(VTK REQUIRED)
+qt5_add_resources(QRC_FILES main_window.qrc)
 
 # compile & link
-set(SOURCE_FILES main.cpp main_window.cpp tool/triangulation.cpp pojo/MyPointCloud.cpp pojo/MyPolygonMesh.cpp main_window.ui main_window.qrc tool/projection.cpp tool/projection.h tool/resampling.cpp tool/resampling.h tool/filter.cpp tool/filter.h tool/io.cpp tool/io.h tool/utils.cpp tool/utils.h pojo/MyException.cpp pojo/MyException.h)
+set(SOURCE_FILES main.cpp main_window.cpp main_window.ui ${QRC_FILES} tool/triangulation.cpp pojo/MyPointCloud.cpp pojo/MyPolygonMesh.cpp tool/projection.cpp tool/projection.h tool/resampling.cpp tool/resampling.h tool/filter.cpp tool/filter.h tool/io.cpp tool/io.h tool/utils.cpp tool/utils.h pojo/MyException.cpp pojo/MyException.h)
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} ${PCL_LIBRARIES} )
 qt5_use_modules(${PROJECT_NAME} Widgets)

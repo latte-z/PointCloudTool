@@ -5,20 +5,38 @@
 #ifndef PCL_TRIANGULATION_PCL_VISUALIZER_H
 #define PCL_TRIANGULATION_PCL_VISUALIZER_H
 
+// Visualization Toolkit
 // VTK build from source with OpenGL2 Rendering
-// These code are not necessary
+// These code are not necessary on macOS
 //#include <vtkAutoInit.h>
 //VTK_MODULE_INIT(vtkRenderingOpenGL2);
 //VTK_MODULE_INIT(vtkInteractionStyle);
+#include <vtkRenderWindow.h>
 
+#include <iostream>
+#include <vector>
+#include <QFileDialog>
+#include <QtWidgets/QWidget>
+#include <QMessageBox>
+#include <QSignalMapper>
+#include <QDateTime>
 #include <QtWidgets/QMainWindow>
+
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/exceptions.h>
 
+#include "tool/triangulation.h"
+#include "tool/projection.h"
+#include "tool/resampling.h"
+#include "tool/filter.h"
+#include "tool/utils.h"
+#include "tool/io.h"
+#include "pojo/MyException.h"
 #include "pojo/MyPointCloud.h"
+
 #include "ui_main_window.h"
 
 
@@ -32,25 +50,25 @@ public:
 
 private:
     Ui::MainWindow ui;
+
     // 存储点云数据
-    MyPointCloud my_point_cloud;
+    MyPointCloud myPointCloud;
     std::vector<MyPointCloud> cloud_vector;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
+    long points_number = 0;
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
 
     // 存储mesh数据
     pcl::PolygonMesh mesh;
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer_mesh;
 
-    // 初始化vtk
+    // 初始化
     void Initial();
-
-    void InitialVtkWidget();
-
-    void InitialMeshVtkWidget();
 
     // 点云区域框选
     static void pp_callback(const pcl::visualization::AreaPickingEvent &event, void *args);
+
+    // 更新viewer
+    void updateViewer(boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer);
 
 private slots:
 
