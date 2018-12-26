@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>150</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>85</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>150</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>400</width>
+    <height>150</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>File Transform</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <property name="animated">
+   <bool>true</bool>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="Label">
+        <property name="maximumSize">
+         <size>
+          <width>70</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>File Path：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="fileName">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>43</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>43</height>
+       </size>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QPushButton" name="openButton">
+       <property name="text">
+        <string>Open File</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="comboBox">
+       <item>
+        <property name="text">
+         <string>XYZ-&gt;PCD</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>PCD-&gt;XYZ</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QPushButton" name="transformButton">
+       <property name="text">
+        <string>Transform</string>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/open.png</normaloff>:/Resources/images/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+   <property name="statusTip">
+    <string>open a exsting file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/save.png</normaloff>:/Resources/images/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="statusTip">
+    <string>save the file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSaveas">
+   <property name="text">
+    <string>Save as...</string>
+   </property>
+  </action>
+  <action name="actionCube">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/cube.png</normaloff>:/Resources/images/cube.png</iconset>
+   </property>
+   <property name="text">
+    <string>Generate cube</string>
+   </property>
+   <property name="statusTip">
+    <string>generate a cube point cloud</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/help.png</normaloff>:/Resources/images/help.png</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+   <property name="statusTip">
+    <string>show help information</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/about.png</normaloff>:/Resources/images/about.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="statusTip">
+    <string>show some information of the software</string>
+   </property>
+  </action>
+  <action name="actionChange">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/change.png</normaloff>:/Resources/images/change.png</iconset>
+   </property>
+   <property name="text">
+    <string>Change</string>
+   </property>
+   <property name="statusTip">
+    <string>change the format of the file</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/exit.png</normaloff>:/Resources/images/exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionPointcolor">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/pointcolor.png</normaloff>:/Resources/images/pointcolor.png</iconset>
+   </property>
+   <property name="text">
+    <string>Point cloud color</string>
+   </property>
+  </action>
+  <action name="actionBgcolor">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/bgcolor.png</normaloff>:/Resources/images/bgcolor.png</iconset>
+   </property>
+   <property name="text">
+    <string>Background color</string>
+   </property>
+  </action>
+  <action name="actionMainview">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/zhengshi.png</normaloff>:/Resources/images/zhengshi.png</iconset>
+   </property>
+   <property name="text">
+    <string>Main view</string>
+   </property>
+  </action>
+  <action name="actionLeftview">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/zuoshi.png</normaloff>:/Resources/images/zuoshi.png</iconset>
+   </property>
+   <property name="text">
+    <string>Left view</string>
+   </property>
+  </action>
+  <action name="actionTopview">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/fushi.png</normaloff>:/Resources/images/fushi.png</iconset>
+   </property>
+   <property name="text">
+    <string>Top view</string>
+   </property>
+  </action>
+  <action name="actionData">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Data Manager</string>
+   </property>
+  </action>
+  <action name="actionProperty">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Property Manager</string>
+   </property>
+  </action>
+  <action name="actionConsole">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Console</string>
+   </property>
+  </action>
+  <action name="actionRGB">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>RGB Manager</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/clear.png</normaloff>:/Resources/images/clear.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear</string>
+   </property>
+  </action>
+  <action name="actionAdd">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/add.png</normaloff>:/Resources/images/add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add</string>
+   </property>
+  </action>
+  <action name="actionSphere">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/sphere.png</normaloff>:/Resources/images/sphere.png</iconset>
+   </property>
+   <property name="text">
+    <string>Sphere</string>
+   </property>
+  </action>
+  <action name="actionCylinder">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/cylinder.png</normaloff>:/Resources/images/cylinder.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cylinder</string>
+   </property>
+  </action>
+  <action name="actionMeshsurface">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/mesh.png</normaloff>:/Resources/images/mesh.png</iconset>
+   </property>
+   <property name="text">
+    <string>Surface</string>
+   </property>
+  </action>
+  <action name="actionWireframe">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/frame.png</normaloff>:/Resources/images/frame.png</iconset>
+   </property>
+   <property name="text">
+    <string>Wireframe</string>
+   </property>
+  </action>
+  <action name="actionWindowsTheme">
+   <property name="text">
+    <string>Windows</string>
+   </property>
+  </action>
+  <action name="actionDarculaTheme">
+   <property name="text">
+    <string>Darcula</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="actionChinese">
+   <property name="text">
+    <string>Chinese</string>
+   </property>
+  </action>
+  <action name="saveBinaryAction">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/Resources/images/saveBinary.png</normaloff>:/Resources/images/saveBinary.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save as binary</string>
+   </property>
+   <property name="statusTip">
+    <string>Save point cloud as binary file</string>
+   </property>
+  </action>
+  <action name="actionTriangulation">
+   <property name="text">
+    <string>Triangulation</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="../main_window.qrc"/>
+ </resources>
+ <connections/>
+</ui>

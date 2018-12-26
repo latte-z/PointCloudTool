@@ -1,0 +1,16 @@
+<RCC>
+  <qresource prefix="/">
+    <file>Resources/images/Add.png</file>
+    <file>Resources/images/Change.png</file>
+    <file>Resources/images/Clear.png</file>
+    <file>Resources/images/Cube.png</file>
+    <file>Resources/images/Frame.png</file>
+    <file>Resources/images/Frontview.png</file>
+    <file>Resources/images/Leftview.png</file>
+    <file>Resources/images/Mesh.png</file>
+    <file>Resources/images/Open.png</file>
+    <file>Resources/images/projection.png</file>
+    <file>Resources/images/Save.png</file>
+    <file>Resources/images/Topview.png</file>
+  </qresource>
+</RCC>
