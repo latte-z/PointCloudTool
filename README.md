@@ -1,2 +1,2 @@
 # PointCloudTool
-基于Qt和PCL开发的电云处理软件
+基于Qt和PCL开发的点云处理软件
