@@ -5,6 +5,11 @@
 #ifndef PCL_TRIANGULATION_PCL_VISUALIZER_H
 #define PCL_TRIANGULATION_PCL_VISUALIZER_H
 
+#ifdef Q_OS_MAC
+#include <Carbon/Carbon.h>
+#include <ApplicationServices/ApplicationServices.h>
+#endif
+
 // Visualization Toolkit
 // VTK build from source with OpenGL2 Rendering
 // These code are not necessary on macOS
@@ -27,8 +32,10 @@
 #include <pcl/point_cloud.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/exceptions.h>
+#include <pcl/visualization/cloud_viewer.h>
 
 #include "tool/triangulation.h"
+#include "tool/classifier.h"
 #include "tool/projection.h"
 #include "tool/resampling.h"
 #include "tool/filter.h"
@@ -101,8 +108,12 @@ private slots:
     void FilterStatisticalOutlierRemoval();
 
 
+    void toggleSelectPoints(bool isToggle);
     // remove points
     void RemoveSelectPoints();
+
+    // Region Growing
+    void RegionGrowing();
 
     // Console print
     void SaveLog(QString operation, QString note);

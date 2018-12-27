@@ -167,7 +167,10 @@
    <addaction name="actionMeshsurface"/>
    <addaction name="actionWireframe"/>
    <addaction name="separator"/>
+   <addaction name="actionSelect"/>
    <addaction name="actionRemovePoint"/>
+   <addaction name="separator"/>
+   <addaction name="actionRegionGrowing"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="consoleDock">
@@ -498,6 +501,10 @@
    </property>
   </action>
   <action name="actionRemovePoint">
+   <property name="icon">
+    <iconset resource="main_window.qrc">
+     <normaloff>:/Resources/images/RemoveSelectPoint.png</normaloff>:/Resources/images/RemoveSelectPoint.png</iconset>
+   </property>
    <property name="text">
     <string>Remove Select Point</string>
    </property>
@@ -514,6 +521,27 @@
    </property>
    <property name="text">
     <string>Mesh Viewer</string>
+   </property>
+  </action>
+  <action name="actionSelect">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="main_window.qrc">
+     <normaloff>:/Resources/images/Select.png</normaloff>:/Resources/images/Select.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select</string>
+   </property>
+  </action>
+  <action name="actionRegionGrowing">
+   <property name="icon">
+    <iconset resource="main_window.qrc">
+     <normaloff>:/Resources/images/Regiongrowing.png</normaloff>:/Resources/images/Regiongrowing.png</iconset>
+   </property>
+   <property name="text">
+    <string>RegionGrowing</string>
    </property>
   </action>
  </widget>

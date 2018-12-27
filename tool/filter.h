@@ -1,7 +1,7 @@
 //
 // Created by Ryan Shen on 2018/11/22.
 //
-
+#pragma once
 #ifndef POINT_CLOUD_TOOL_FILTER_H
 #define POINT_CLOUD_TOOL_FILTER_H
 

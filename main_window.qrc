@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="/">
+    <file>Resources/images/Regiongrowing.png</file>
+    <file>Resources/images/Select.png</file>
+    <file>Resources/images/RemoveSelectPoint.png</file>
     <file>Resources/images/Add.png</file>
     <file>Resources/images/Change.png</file>
     <file>Resources/images/Clear.png</file>

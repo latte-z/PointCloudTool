@@ -1,6 +1,7 @@
 //
 // Created by Ryan Shen on 2018/11/6.
 //
+#include <QKeyEvent>
 #include "main_window.h"
 
 // 初始化静态对象指针
@@ -51,8 +52,13 @@ MainWindow::MainWindow(QWidget *parent)
     // filter
     connect(ui.actionStatisticalOutlierRemoval, SIGNAL(triggered()), this, SLOT(FilterStatisticalOutlierRemoval()));
 
+    // Select
+    connect(ui.actionSelect, SIGNAL(triggered(bool)), this, SLOT(toggleSelectPoints(bool)));
     // remove select points
     connect(ui.actionRemovePoint, SIGNAL(triggered()), this, SLOT(RemoveSelectPoints()));
+
+    // Region growing
+    connect(ui.actionRegionGrowing, SIGNAL(triggered()), this, SLOT(RegionGrowing()));
 }
 
 MainWindow::~MainWindow() {
@@ -68,9 +74,10 @@ void MainWindow::Initial() {
 
     // 初始化两个VTK Widget
     viewer.reset(new pcl::visualization::PCLVisualizer("point cloud viewer", false));
-//    viewer->addPointCloud(myPointCloud.cloud, "cloudinit");
+
     // 注册选取点云的回调函数
     viewer->registerAreaPickingCallback(pp_callback, (void *) &(myPointCloud.cloud));
+
     ui.qvtkWidget->SetRenderWindow(viewer->getRenderWindow());
     viewer->setupInteractor(ui.qvtkWidget->GetInteractor(), ui.qvtkWidget->GetRenderWindow());
     ui.qvtkWidget->update();
@@ -112,6 +119,14 @@ void MainWindow::pp_callback(const pcl::visualization::AreaPickingEvent &event, 
     pThis->viewer->addPointCloud(selected_points, red, cloudName);
     pThis->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, cloudName);
     pThis->ui.qvtkWidget->update();
+}
+
+void MainWindow::toggleSelectPoints(bool isToggle) {
+    // 在 OSX 中模拟鼠标或者键盘事件需要走苹果的API实现
+    CGKeyCode key = kVK_ANSI_X;
+    CGEventRef pressXDown = CGEventCreateKeyboardEvent(nullptr, key, true);
+    CGEventPost(kCGHIDEventTap, pressXDown);
+    CFRelease(pressXDown);
 }
 
 // 读取文本和二进制点云数据
@@ -190,9 +205,6 @@ void MainWindow::SaveFile() {
 }
 
 void MainWindow::Clear() {
-//    viewer->removePointCloud("cloud", 0);
-//    viewer_mesh->removePolygonMesh("mesh", 0);
-
     // 更加彻底的移除
     viewer->removeAllPointClouds();
     viewer->removeAllShapes();
@@ -216,16 +228,19 @@ void MainWindow::Exit() {
 // View point setting
 void MainWindow::MainView() {
     viewer->setCameraPosition(0, -1, 0, 0.5, 0.5, 0.5, 0, 0, 1);
+    viewer->resetCamera();
     ui.qvtkWidget->update();
 }
 
 void MainWindow::LeftView() {
     viewer->setCameraPosition(-1, 0, 0, 0, 0, 0, 0, 0, 1);
+    viewer->resetCamera();
     ui.qvtkWidget->update();
 }
 
 void MainWindow::TopView() {
     viewer->setCameraPosition(0, 0, 1, 0, 0, 0, 0, 1, 0);
+    viewer->resetCamera();
     ui.qvtkWidget->update();
 }
 
@@ -338,6 +353,33 @@ void MainWindow::RemoveSelectPoints() {
     catch (MyException &e) {
         SaveLog("处理发生错误", "请重试");
     }
+}
+
+// Region growing
+void MainWindow::RegionGrowing() {
+    pcl::RegionGrowing<pcl::PointXYZ, pcl::Normal> regionGrowing = getRegionGrowing(myPointCloud.cloud);
+
+    std::vector<pcl::PointIndices> clusters;
+    regionGrowing.extract(clusters);
+
+    std::cout << "Number of clusters is equal to " << clusters.size () << std::endl;
+    std::cout << "First cluster has " << clusters[0].indices.size () << " points." << endl;
+    std::cout << "These are the indices of the points of the initial" <<
+              std::endl << "cloud that belong to the first cluster:" << std::endl;
+    int counter = 0;
+    while (counter < clusters[0].indices.size ())
+    {
+        std::cout << clusters[0].indices[counter] << ", ";
+        counter++;
+        if (counter % 10 == 0)
+            std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr colored_cloud = regionGrowing.getColoredCloud();
+    viewer->removeAllPointClouds();
+    viewer->addPointCloud(colored_cloud);
+    ui.qvtkWidget->update();
 }
 
 void MainWindow::updateViewer(boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer) {
