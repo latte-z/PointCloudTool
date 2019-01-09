@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>661</height>
+    <width>1099</width>
+    <height>814</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -64,7 +64,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
+     <width>1099</width>
      <height>25</height>
     </rect>
    </property>
@@ -130,11 +130,15 @@
     <addaction name="separator"/>
     <addaction name="actionMeshsurface"/>
     <addaction name="actionWireframe"/>
+    <addaction name="separator"/>
+    <addaction name="actionRegionGrowing"/>
+    <addaction name="actionColorBasedRegionGrowing"/>
    </widget>
    <widget class="QMenu" name="menuFilter">
     <property name="title">
      <string>Filter</string>
     </property>
+    <addaction name="actionPassThrough"/>
     <addaction name="actionStatisticalOutlierRemoval"/>
    </widget>
    <addaction name="menuFile"/>
@@ -170,7 +174,6 @@
    <addaction name="actionSelect"/>
    <addaction name="actionRemovePoint"/>
    <addaction name="separator"/>
-   <addaction name="actionRegionGrowing"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="consoleDock">
@@ -244,6 +247,465 @@
          <set>AlignLeading|AlignVCenter</set>
         </property>
        </column>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="regionGrowingDock">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="windowTitle">
+    <string>Region Growing Config</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="1" column="0">
+      <widget class="QTabWidget" name="rgTab">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="rgTab1">
+        <attribute name="title">
+         <string>Basic</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="ksearch">
+             <property name="text">
+              <string>K Search</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="ksearch_input">
+             <property name="text">
+              <string>50</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="min_cluster_size">
+             <property name="text">
+              <string>Min Cluster Size</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="min_cluster_size_input">
+             <property name="text">
+              <string>50</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="max_cluster_size">
+             <property name="text">
+              <string>Max Cluster Size</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="max_cluster_size_input">
+             <property name="text">
+              <string>1000000</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="neighbour_num">
+             <property name="text">
+              <string>Neighbour Num</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="neighbour_num_input">
+             <property name="text">
+              <string>30</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QLabel" name="smoothness_theta">
+             <property name="text">
+              <string>Smoothness Theta</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="smoothness_theta_input">
+             <property name="text">
+              <string>0.052359878</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLabel" name="curvature">
+             <property name="text">
+              <string>Curvature</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="curvature_input">
+             <property name="text">
+              <string>1.0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="basic_confirm">
+           <property name="text">
+            <string>Confirm</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="basic_verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="rgTab2">
+        <attribute name="title">
+         <string>Color-Based</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <widget class="QLabel" name="min_cluster_size2">
+             <property name="text">
+              <string>Min Cluster Size</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="min_cluster_size2_input">
+             <property name="text">
+              <string>100</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QLabel" name="neighbours_dist">
+             <property name="text">
+              <string>Neighbours Dist</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="neighbours_dist_input">
+             <property name="text">
+              <string>10</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <item>
+            <widget class="QLabel" name="point_color_diff">
+             <property name="text">
+              <string>Point Color Diff</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="point_color_diff_input">
+             <property name="text">
+              <string>6</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <item>
+            <widget class="QLabel" name="region_color_diff">
+             <property name="text">
+              <string>Region Color Diff</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="region_color_diff_input">
+             <property name="text">
+              <string>5</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="color_confirm">
+           <property name="text">
+            <string>Confirm</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="color_verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="filterDock">
+   <property name="windowTitle">
+    <string>Filter Config</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QTabWidget" name="filterTab">
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <widget class="QWidget" name="filterTab1">
+        <attribute name="title">
+         <string>Passthrough</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
+           <item>
+            <widget class="QLabel" name="axis">
+             <property name="text">
+              <string>Axis</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="axis_input">
+             <item>
+              <property name="text">
+               <string>x</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>y</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>z</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_14">
+           <item>
+            <widget class="QLabel" name="lower_limit">
+             <property name="text">
+              <string>Lower limit</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lower_limit_input">
+             <property name="text">
+              <string>0.0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_15">
+           <item>
+            <widget class="QLabel" name="upper_limit">
+             <property name="text">
+              <string>Upper limit</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="upper_limit_input">
+             <property name="text">
+              <string>1.0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="passthrough_confirm">
+           <property name="text">
+            <string>Confirm</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="filterTab2">
+        <attribute name="title">
+         <string>Statistical</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_16">
+           <item>
+            <widget class="QLabel" name="negative">
+             <property name="text">
+              <string>Negative Select</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="negative_input">
+             <item>
+              <property name="text">
+               <string>True</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>False</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_17">
+           <item>
+            <widget class="QLabel" name="meank">
+             <property name="text">
+              <string>Mean K</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="meank_input">
+             <property name="text">
+              <string>50</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_18">
+           <item>
+            <widget class="QLabel" name="stddev">
+             <property name="text">
+              <string>Standard deviation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="stddev_input">
+             <property name="text">
+              <string>1.0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="statistical_confirm">
+           <property name="text">
+            <string>Confirm</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -541,7 +1003,20 @@
      <normaloff>:/Resources/images/Regiongrowing.png</normaloff>:/Resources/images/Regiongrowing.png</iconset>
    </property>
    <property name="text">
-    <string>RegionGrowing</string>
+    <string>Region Growing</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionPassThrough">
+   <property name="text">
+    <string>Pass Through Filter</string>
+   </property>
+  </action>
+  <action name="actionColorBasedRegionGrowing">
+   <property name="text">
+    <string>Color Based Region Growing</string>
    </property>
   </action>
  </widget>

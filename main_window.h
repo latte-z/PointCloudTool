@@ -5,7 +5,8 @@
 #ifndef PCL_TRIANGULATION_PCL_VISUALIZER_H
 #define PCL_TRIANGULATION_PCL_VISUALIZER_H
 
-#ifdef Q_OS_MAC
+#include <QtGlobal>
+#ifdef Q_OS_MACOS
 #include <Carbon/Carbon.h>
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -23,7 +24,6 @@
 #include <QFileDialog>
 #include <QtWidgets/QWidget>
 #include <QMessageBox>
-#include <QSignalMapper>
 #include <QDateTime>
 #include <QtWidgets/QMainWindow>
 
@@ -33,6 +33,7 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/exceptions.h>
 #include <pcl/visualization/cloud_viewer.h>
+#include <pcl/segmentation/region_growing_rgb.h>
 
 #include "tool/triangulation.h"
 #include "tool/classifier.h"
@@ -105,6 +106,11 @@ private slots:
 
     void GetResample();
 
+    // Filter
+    void openFilterPanel(int type);
+
+    void FilterPassThrough();
+
     void FilterStatisticalOutlierRemoval();
 
 
@@ -114,6 +120,10 @@ private slots:
 
     // Region Growing
     void RegionGrowing();
+    void RegionGrowingRGB();
+
+    // 控制Config面板开关
+    void openRegionGrowingPanel(bool isBasic);
 
     // Console print
     void SaveLog(QString operation, QString note);

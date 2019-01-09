@@ -33,3 +33,9 @@ set(SOURCE_FILES main.cpp main_window.cpp main_window.ui ${QRC_FILES} tool/trian
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} ${PCL_LIBRARIES} )
 qt5_use_modules(${PROJECT_NAME} Widgets)
+
+add_executable(transtype independent/pcl_trans_file_type.cpp)
+target_link_libraries(transtype ${PCL_LIBRARIES})
+
+add_executable(normalestimating independent/pcl_normal_estimating.cpp)
+target_link_libraries(normalestimating ${PCL_LIBRARIES})
